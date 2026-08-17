@@ -1,0 +1,54 @@
+services:
+  order-db:
+    image: postgres:16-alpine
+    container_name: sio-order-db
+    environment:
+      POSTGRES_DB: sio-order-db
+      POSTGRES_USER: sio-order-user
+      POSTGRES_PASSWORD: sio-order-password222
+    volumes:
+      - sio-order-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U sio-order-user -d sio-order-db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - sio-net
+
+  order-service:
+    build: .
+    container_name: sio-order-service
+    # ports:
+    #   - "3003:3003"
+    env_file:
+      - .env
+    networks:
+      - sio-net
+    depends_on:
+      order-db:
+        condition: service_healthy
+    labels:
+      traefik.enable: true
+      traefik.docker.network: sio-net
+      traefik.http.routers.sio-order.rule: PathPrefix(`/orders`)
+      traefik.http.routers.sio-order.entrypoints: web
+      traefik.http.routers.sio-order.middlewares: cors@file
+      traefik.http.services.sio-order.loadbalancer.server.port: 3003
+
+  adminer:
+    image: adminer:latest
+    container_name: sio-order-adminer
+    ports:
+      - "8083:8080"
+    depends_on:
+      - order-db
+    networks:
+      - sio-net
+
+volumes:
+  sio-order-db-data:
+
+networks:
+  sio-net:
+    external: true
