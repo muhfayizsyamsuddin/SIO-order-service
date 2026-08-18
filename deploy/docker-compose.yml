@@ -40,7 +40,6 @@ services:
       traefik.http.routers.sio-order.entrypoints: websecure
       traefik.http.routers.sio-order.tls: "true"
       traefik.http.routers.sio-order.tls.certresolver: myresolver
-      traefik.http.routers.sio-order.middlewares: cors@file
       traefik.http.services.sio-order.loadbalancer.server.port: "3003"
     restart: unless-stopped
 
