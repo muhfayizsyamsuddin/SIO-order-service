@@ -22,7 +22,7 @@ services:
     restart: unless-stopped
 
   order-service:
-    build: .
+    image: faizms14/sio-order-service:latest
     container_name: sio-order-service
     env_file:
       - .env
