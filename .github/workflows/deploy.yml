@@ -51,7 +51,7 @@ jobs:
                 username: ${{ secrets.SSH_USER }}
                 key: ${{ secrets.SSH_PRIVATE_KEY }}
                 script: |
-                  cd /home/faizms14/project/sioms/order-service
+                  cd /home/faizms14/project/sioms/order-service/deploy
                   echo ${{ secrets.APP_ENV }} | base64 -d > .env
                   docker compose pull
                   docker compose up -d
